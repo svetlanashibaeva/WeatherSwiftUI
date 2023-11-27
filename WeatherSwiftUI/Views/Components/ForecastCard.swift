@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct ForecastCard: View {
-    var forecast: Forecast
+    var forecast: ForecastList
     var forecastPeriod: ForecastPeriod
+    
     var isActive: Bool {
         if forecastPeriod == ForecastPeriod.hourly {
-            let isHour = Calendar.current.isDate(.now, equalTo: forecast.date, toGranularity: .hour)
+            let isHour = Calendar.current.isDate(.now, equalTo: forecast.dt, toGranularity: .hour)
             return isHour
         } else {
-            let isToday = Calendar.current.isDate(.now, equalTo: forecast.date, toGranularity: .day)
+            let isToday = Calendar.current.isDate(.now, equalTo: forecast.dt, toGranularity: .day)
             return isToday
         }
     }
@@ -35,18 +36,23 @@ struct ForecastCard: View {
                 .innerShadow(shape: RoundedRectangle(cornerRadius: 30), color: .white.opacity(0.25), lineWidth: 1, offsetX: 1, offsetY: 1, blur: 0, blendMode: .overlay)
             
             VStack(spacing: 16) {
-                Text(forecast.date, format: forecastPeriod == ForecastPeriod.hourly ? .dateTime.hour() : .dateTime.weekday())
+                Text(forecast.dt, format: forecastPeriod == ForecastPeriod.hourly ? .dateTime.hour() : .dateTime.weekday())
                     .font(.subheadline.weight(.semibold))
                 
-                VStack(spacing: -4) {
-                    Image("\(forecast.icon) small")
-                    
-                    Text(forecast.probability, format: .percent)
-                        .font(.footnote.weight(.semibold))
-                        .foregroundColor(Color.probabilityText)
-                        .opacity(forecast.probability > 0 ? 1 : 0)
-                }
-                .frame(height: 42)
+//                VStack(spacing: -4) {
+//                    Image(forecast.weather.first?.main.imageName ?? "")
+//
+//                    Text(String(format: "%.1f", forecast.main.temp.rounded()) + "°")
+//                        .font(.footnote.weight(.semibold))
+//                        .foregroundColor(Color.probabilityText)
+////                        .opacity(forecast.probability > 0 ? 1 : 0)
+//                }
+//                .frame(height: 42)
+                
+                Image("\(forecast.weather.first?.main.imageName ?? "") small")
+                
+                Text(String(format: "%.1f", forecast.main.temp.rounded()) + "°")
+                    .font(.subheadline.weight(.bold))
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 16)
@@ -57,6 +63,6 @@ struct ForecastCard: View {
 
 struct ForecastCard_Previews: PreviewProvider {
     static var previews: some View {
-        ForecastCard(forecast: Forecast.hourly[0], forecastPeriod: .hourly)
+        ForecastCard(forecast: ForecastList(main: MainWeather(temp: 12.0, feelsLike: 22.0, tempMin: 12.0, tempMax: 22.0, humidity: 64, pressure: 1000), dt: Date(), weather: []), forecastPeriod: .hourly)
     }
 }

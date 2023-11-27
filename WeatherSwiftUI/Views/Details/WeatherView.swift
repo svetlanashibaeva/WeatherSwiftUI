@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct WeatherView: View {
-    @State private var searchText = ""
+    @ObservedObject private var viewModel = WeatherViewModel()
     
-    var searchResults: [Forecast] {
-        if searchText.isEmpty {
-            return Forecast.cities
-        } else {
-            return Forecast.cities.filter { $0.location.contains(searchText) }
-        }
-    }
+//    var searchResults: [Forecast] {
+//        if searchText.isEmpty {
+//            return Forecast.cities
+//        } else {
+//            return Forecast.cities.filter { $0.location.contains(searchText) }
+//        }
+//    }
     
     var body: some View {
         ZStack {
@@ -26,8 +26,8 @@ struct WeatherView: View {
             // MARK: Weather widgets
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 20) {
-                    ForEach(searchResults) { forecast in
-                        WeatherWidget(forecast: forecast)
+                    ForEach(viewModel.cityList, id: \.self) { city in
+                        SearchCell(city: city.name)
                     }
                 }
             }
@@ -37,10 +37,10 @@ struct WeatherView: View {
             }
         }
         .overlay {
-            NavigationBar(searchText: $searchText)
+            NavigationBar(searchText: $viewModel.cityName)
         }
         .navigationBarHidden(true)
-        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for a city or airport")
+//        .searchable(text: $viewModel.cityName, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for a city")
     }
 }
 

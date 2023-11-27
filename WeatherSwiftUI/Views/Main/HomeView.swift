@@ -18,11 +18,45 @@ struct HomeView: View {
     @State var bottomSheetTranslation: CGFloat = BottomSheetPosition.middle.rawValue
     @State var hasDragged: Bool = false
     
+    @ObservedObject private var viewModel = HomeViewModel()
+    
     var bottomSheetTranslationProrated: CGFloat {
         (bottomSheetTranslation - BottomSheetPosition.middle.rawValue) / (BottomSheetPosition.top.rawValue - BottomSheetPosition.middle.rawValue)
     }
     
     var body: some View {
+//        if let mainWeather = viewModel.mainWeather {
+//            mainView(mainWeather: mainWeather)
+//        } else {
+//            Text("Loading")
+//        }
+        mainView()
+    }
+    
+    var attributedString: AttributedString {
+        guard let weather = viewModel.mainWeather else { return ""}
+        
+        var string = AttributedString("\(weather.temp.rounded())°" + (hasDragged ? " | " : "\n ") + "\(viewModel.currentWeather?.weather.first?.description.capitalizingFirstLetter ?? "")")
+        
+        if let temp = string.range(of: "\(weather.temp.rounded())°") {
+            string[temp].font = .system(size: (96 - (bottomSheetTranslationProrated * (96 - 20))), weight: hasDragged ? .semibold : .thin)
+            string[temp].foregroundColor = hasDragged ? .secondary : .primary
+        }
+        
+        if let pipe = string.range(of: " | ") {
+            string[pipe].font = .title3.weight(.semibold)
+            string[pipe].foregroundColor = .secondary
+        }
+        
+        if let weather = string.range(of: viewModel.currentWeather?.weather.first?.description.capitalizingFirstLetter ?? "") {
+            string[weather].font = .title3.weight(.semibold)
+            string[weather].foregroundColor = .secondary
+        }
+        
+        return string
+    }
+    
+    private func mainView() -> some View {
         NavigationView {
             GeometryReader { geometry in
                 let screenHeight = geometry.size.height + geometry.safeAreaInsets.top + geometry.safeAreaInsets.bottom
@@ -42,13 +76,14 @@ struct HomeView: View {
                         .offset(y: -bottomSheetTranslationProrated * imageOffset)
                     
                     VStack(spacing: -10 * (1 - bottomSheetTranslationProrated)) {
-                        Text("Moscow")
+                        Text(viewModel.city?.name ?? "")
                             .font(.largeTitle)
                         
                         VStack {
                             Text(attributedString)
+                                .multilineTextAlignment(.center)
                             
-                            Text("H:24°   L:18°")
+                            Text(tempTitle)
                                 .font(.title3.weight(.semibold))
                                 .opacity(1 - bottomSheetTranslationProrated)
                         }
@@ -60,9 +95,13 @@ struct HomeView: View {
                     
                     // MARK: Bottom sheet
                     BottomSheetView(position: $bottomSheetPosition) {
-    //                    Text(bottomSheetPosition.rawValue.formatted())
+                        //                    Text(bottomSheetPosition.rawValue.formatted())
                     } content: {
-                        ForecastView(bottomSheetTranslationProrated: bottomSheetTranslationProrated)
+                        ForecastView(
+                            bottomSheetTranslationProrated: bottomSheetTranslationProrated,
+                            forecast: viewModel.forecast?.list ?? [],
+                            currentWeather: viewModel.currentWeather
+                        )
                     }
                     .onBottomSheetDrag { translation in
                         bottomSheetTranslation = translation / screenHeight
@@ -75,6 +114,8 @@ struct HomeView: View {
                     // MARK: Tab bar
                     TabBar(action: {
                         bottomSheetPosition = .top
+//                        guard let location = viewModel.location else { return }
+//                        viewModel.setCityName(from: location)
                     })
                     .offset(y: bottomSheetTranslationProrated * 115)
                 }
@@ -83,25 +124,10 @@ struct HomeView: View {
         }
     }
     
-    var attributedString: AttributedString {
-        var string = AttributedString("19°" + (hasDragged ? " | " : "\n ") + "Mostly clear")
+    private var tempTitle: String {
+        guard let mainWeather = viewModel.mainWeather else { return "" }
         
-        if let temp = string.range(of: "19°") {
-            string[temp].font = .system(size: (96 - (bottomSheetTranslationProrated * (96 - 20))), weight: hasDragged ? .semibold : .thin)
-            string[temp].foregroundColor = hasDragged ? .secondary : .primary
-        }
-        
-        if let pipe = string.range(of: " | ") {
-            string[pipe].font = .title3.weight(.semibold)
-            string[pipe].foregroundColor = .secondary
-        }
-        
-        if let weather = string.range(of: "Mostly clear") {
-            string[weather].font = .title3.weight(.semibold)
-            string[weather].foregroundColor = .secondary
-        }
-        
-        return string
+        return "H: \(mainWeather.tempMax.rounded())° L: \(mainWeather.tempMin.rounded())°"
     }
 }
 

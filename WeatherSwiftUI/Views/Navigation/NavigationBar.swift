@@ -30,10 +30,10 @@ struct NavigationBar: View {
                 }
                 
                 Spacer()
-                
-                Image(systemName: "ellipsis.circle")
-                    .font(.system(size: 28))
-                    .frame(width: 44, height: 44, alignment: .trailing)
+//
+//                Image(systemName: "ellipsis.circle")
+//                    .font(.system(size: 28))
+//                    .frame(width: 44, height: 44, alignment: .trailing)
             }
             .frame(height: 52)
             
@@ -41,7 +41,7 @@ struct NavigationBar: View {
             HStack(spacing: 2) {
                 Image(systemName: "magnifyingglass")
                 
-                TextField("Search for a city or airport", text: $searchText)
+                TextField("Search for a city", text: $searchText)
             }
             .foregroundColor(.secondary)
             .padding(.horizontal, 6)
