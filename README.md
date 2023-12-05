@@ -9,6 +9,13 @@ Used:
 [CoreLocation](https://developer.apple.com/documentation/corelocation) to get current location.
 
 ## HomeView
+![HomeView](https://github.com/svetlanashibaeva/WeatherSwiftUI/blob/main/Screenshots/weatherSwiftUI1.png)
+![HomeView](https://github.com/svetlanashibaeva/WeatherSwiftUI/blob/main/Screenshots/weatherSwiftUI2.png)
 
+## Search and save city
+![SearchCity](https://github.com/svetlanashibaeva/WeatherSwiftUI/blob/main/Screenshots/weatherSwiftUI3.png)
+![SearchCity](https://github.com/svetlanashibaeva/WeatherSwiftUI/blob/main/Screenshots/weatherSwiftUI4.png)
 
+## Delete city
+![DeleteCity](https://github.com/svetlanashibaeva/WeatherSwiftUI/blob/main/Screenshots/weatherSwiftUI5.png)
 
