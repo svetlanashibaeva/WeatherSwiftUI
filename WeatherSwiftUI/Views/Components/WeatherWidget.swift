@@ -21,7 +21,7 @@ struct WeatherWidget: View {
                 VStack(alignment: .leading, spacing: 8) {
                     
                     Text(String(format: "%.1f", currentWeather?.main.temp ?? 0.0) + "°")
-                        .font(.system(size: 64))
+                        .font(.system(size: 56))
                     
                     VStack(alignment: .leading, spacing: 2) {
                         HStack {
