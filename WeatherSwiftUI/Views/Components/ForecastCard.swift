@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ForecastCard: View {
-    var forecast: ForecastList
-    var forecastPeriod: ForecastPeriod
+    let forecast: ForecastList
+    let forecastPeriod: ForecastPeriod
     
     var isActive: Bool {
         if forecastPeriod == ForecastPeriod.hourly {
@@ -39,20 +39,10 @@ struct ForecastCard: View {
                 Text(forecast.dt, format: forecastPeriod == ForecastPeriod.hourly ? .dateTime.hour() : .dateTime.weekday())
                     .font(.subheadline.weight(.semibold))
                 
-//                VStack(spacing: -4) {
-//                    Image(forecast.weather.first?.main.imageName ?? "")
-//
-//                    Text(String(format: "%.1f", forecast.main.temp.rounded()) + "°")
-//                        .font(.footnote.weight(.semibold))
-//                        .foregroundColor(Color.probabilityText)
-////                        .opacity(forecast.probability > 0 ? 1 : 0)
-//                }
-//                .frame(height: 42)
-                
                 Image("\(forecast.weather.first?.main.imageName ?? "") small")
                 
                 Text(String(format: "%.1f", forecast.main.temp.rounded()) + "°")
-                    .font(.subheadline.weight(.bold))
+                    .font(.footnote.weight(.bold))
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 16)

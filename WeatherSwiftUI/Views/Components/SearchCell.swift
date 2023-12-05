@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct SearchCell: View {
-    var city: String
+    let city: String
+    let isSaved: Bool
+    let action: () -> Void
     
     var body: some View {
         
@@ -29,12 +31,13 @@ struct SearchCell: View {
                 
                 Spacer()
 
-                Button {
-                    // сохранить в бд
-                } label: {
-                    Image(systemName: "plus")
+                if !isSaved {
+                    Button(action: action) {
+                        Image(systemName: "plus")
+                    }
+                    .foregroundColor(.white)
                 }
-                .foregroundColor(.white)
+                
             }
             .padding(.horizontal, 16)
             .frame(width: 342, height: 54)
@@ -44,6 +47,6 @@ struct SearchCell: View {
 
 struct SearchCell_Previews: PreviewProvider {
     static var previews: some View {
-        SearchCell(city: "Ekaterinburg")
+        SearchCell(city: "Ekaterinburg", isSaved: false, action: {})
     }
 }

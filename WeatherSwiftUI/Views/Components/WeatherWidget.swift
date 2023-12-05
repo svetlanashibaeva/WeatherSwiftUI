@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct WeatherWidget: View {
-    var forecast: Forecast
+    let cityName: String
+    let currentWeather: CurrentWeather?
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -19,15 +20,19 @@ struct WeatherWidget: View {
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 8) {
                     
-                    Text("\(forecast.temperature)°")
+                    Text(String(format: "%.1f", currentWeather?.main.temp ?? 0.0) + "°")
                         .font(.system(size: 64))
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("H:\(forecast.high)°  L:\(forecast.low)°")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
+                        HStack {
+                            Text("H:" + String(format: "%.1f", currentWeather?.main.tempMax ?? 0.0) + "°")
+                            
+                            Text("L:" + String(format: "%.1f", currentWeather?.main.tempMin ?? 0.0) + "°")
+                        }
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
                         
-                        Text(forecast.location)
+                        Text(cityName)
                             .font(.body)
                             .lineLimit(1)
                     }
@@ -35,18 +40,17 @@ struct WeatherWidget: View {
                 
                 Spacer()
                 
-                VStack(alignment: .trailing, spacing: 0) {
-                    Image("\(forecast.icon) large")
+                VStack(alignment: .trailing) {
+                    Image("\(currentWeather?.weather.first?.main.imageName ?? "") large")
                         .padding(.trailing, 4)
                     
-                    Text(forecast.weather.rawValue)
+                    Text(currentWeather?.weather.first?.description.capitalizingFirstLetter ?? "")
                         .font(.footnote)
                         .padding(.trailing, 24)
                 }
             }
             .foregroundColor(.white)
-            .padding(.bottom, 20)
-            .padding(.leading, 20)
+            .padding([.bottom, .leading], 20.0)
         }
         .frame(width: 342, height: 184, alignment: .bottom)
     }
@@ -54,7 +58,7 @@ struct WeatherWidget: View {
 
 struct WeatherWidget_Previews: PreviewProvider {
     static var previews: some View {
-        WeatherWidget(forecast: Forecast.cities[0])
+        WeatherWidget(cityName: "Moscow", currentWeather: nil)
             .preferredColorScheme(.dark)
     }
 }

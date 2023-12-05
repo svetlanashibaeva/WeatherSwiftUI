@@ -15,11 +15,11 @@ struct City: Decodable, Equatable, Hashable {
     var localName: String {
         return localNames?["ru"] ?? name
     }
-    
-//    init(from cityEntity: CityEntity) {
-//        name = cityEntity.name
-//        lat = cityEntity.lat
-//        lon = cityEntity.lon
-//        localNames = nil
-//    }
+}
+
+extension City: Identifiable {
+
+    public var id: String {
+        return "\(lat) \(lon)"
+    }
 }

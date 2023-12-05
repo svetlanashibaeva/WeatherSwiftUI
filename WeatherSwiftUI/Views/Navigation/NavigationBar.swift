@@ -16,6 +16,7 @@ struct NavigationBar: View {
             HStack {
                 Button {
                     dismiss()
+                    searchText = ""
                 } label: {
                     HStack(spacing: 5) {
                         Image(systemName: "chevron.left")
@@ -30,10 +31,6 @@ struct NavigationBar: View {
                 }
                 
                 Spacer()
-//
-//                Image(systemName: "ellipsis.circle")
-//                    .font(.system(size: 28))
-//                    .frame(width: 44, height: 44, alignment: .trailing)
             }
             .frame(height: 52)
             

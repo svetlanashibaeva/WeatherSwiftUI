@@ -11,7 +11,7 @@ import SwiftUI
 struct WeatherSwiftUIApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
                 .environment(\.managedObjectContext, CoreDataService.shared.viewContext)
         }
     }

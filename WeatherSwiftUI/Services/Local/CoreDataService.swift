@@ -12,7 +12,7 @@ final class CoreDataService {
     static let shared = CoreDataService()
     
     private lazy var container: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "WeatherSwiftUI")
+        let container = NSPersistentContainer(name: "DataModel")
         container.loadPersistentStores(completionHandler: { storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")

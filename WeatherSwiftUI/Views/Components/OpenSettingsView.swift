@@ -1,22 +1,19 @@
 //
-//  WidgetCard.swift
+//  OpenSettingsView.swift
 //  WeatherSwiftUI
 //
-//  Created by Светлана Шибаева on 23.11.2023.
+//  Created by Светлана Шибаева on 01.12.2023.
 //
 
 import SwiftUI
 
-struct WidgetCard: View {
-    let title: String
-    let value: String
-    let description: String
-    
+struct OpenSettingsView: View {
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 22)
                 .fill(Color.forecastCardBackground.opacity(0.2))
-                .frame(width: 164, height: 164)
+                .frame(width: 342, height: 100)
                 .overlay {
                     RoundedRectangle(cornerRadius: 22)
                         .strokeBorder(.white)
@@ -25,33 +22,29 @@ struct WidgetCard: View {
             
             VStack(alignment: .leading) {
                 
-                Text(title)
+                Text("Allow the application to get your current position")
                     .font(.subheadline.weight(.semibold))
                     .textCase(.uppercase)
                     .foregroundColor(.secondary)
                 
-                Text(value)
-                    .font(.title2.weight(.semibold))
-                    .padding(.top, 4)
-                
                 Spacer()
                 
-                Text(description)
-                    .font(.footnote.weight(.semibold))
+                Button {
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                } label: {
+                    Text("Open settings")
+                }
+
             }
             .padding(16)
-            .frame(width: 164, height: 164, alignment: .topLeading)
+            .frame(width: 342, height: 100, alignment: .topLeading)
             
         }
     }
 }
 
-struct WidgetCard_Previews: PreviewProvider {
+struct OpenSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        WidgetCard(
-            title: "Feels like",
-            value: "19°",
-            description: "Similar to the actual temperature"
-        )
+        OpenSettingsView()
     }
 }

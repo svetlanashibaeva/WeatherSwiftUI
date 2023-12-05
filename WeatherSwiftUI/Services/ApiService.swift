@@ -21,10 +21,10 @@ class ApiService {
         }
     }
     
-    func performRequest<T: Decodable>(with endpoint: EndpointProtocol, type: T.Type, completion: @escaping (Result<T, Error>) -> ()) {
+    func performRequest<T: Decodable>(with endpoint: EndpointProtocol, completion: @escaping (Result<T, Error>) -> ()) {
         guard let url = buildUrl(with: endpoint) else { return completion(Result.failure(ApiServiceError.urlError)) }
         
-        resumeTask(urlRequest: URLRequest(url: url), type: type, completion: completion)
+        resumeTask(urlRequest: URLRequest(url: url), completion: completion)
     }
     
     private func buildUrl(with endpoint: EndpointProtocol) -> URL? {
@@ -39,7 +39,7 @@ class ApiService {
         return urlComponents.url
     }
     
-    private func resumeTask<T: Decodable>(urlRequest: URLRequest, type: T.Type, completion: @escaping (Result<T, Error>) -> ()) {
+    private func resumeTask<T: Decodable>(urlRequest: URLRequest, completion: @escaping (Result<T, Error>) -> ()) {
         
         URLSession.shared.dataTask(with: urlRequest) { [weak self] data, response, error in
             guard let self = self else { return }

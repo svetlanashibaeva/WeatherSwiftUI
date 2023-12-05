@@ -15,8 +15,10 @@ final class HomeViewModel: NSObject, ObservableObject {
     @Published var city: City?
     @Published var currentWeather: CurrentWeather?
     @Published var forecast: ForecastModel?
+    @Published var isAllowCurrentPosition = false
+    @Published var isError = false
+    var responseError: String?
     
-    var location: CLLocation?
     private let weatherService = WeatherService()
     private let locationManager = CLLocationManager()
     
@@ -28,13 +30,10 @@ final class HomeViewModel: NSObject, ObservableObject {
         
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-        
-//        if (CLLocationManager.locationServicesEnabled()) {
-//        }
     }
     
     private func loadData(lat: Double, lon: Double, name: String) {
-        var responseError: String?
+        responseError = nil
         
         let taskLoadData = DispatchGroup()
         taskLoadData.enter()
@@ -61,30 +60,31 @@ final class HomeViewModel: NSObject, ObservableObject {
                     self?.forecast = response
                 }                
             case let .failure(error):
-                responseError = error.localizedDescription
+                self?.responseError = error.localizedDescription
             }
             
             taskLoadData.leave()
         }
         
-//        taskLoadData.notify(queue: DispatchQueue.main) { [weak self] in
-//            guard let self = self else { return }
-//            
-//            if let responseError = responseError {
-//                self.showError(error: responseError)
-//            }
-//            
-//        }
+        taskLoadData.notify(queue: DispatchQueue.main) { [weak self] in
+            guard let self = self else { return }
+
+            if responseError != nil {
+                isError = true
+            }
+        }
     }
     
     func setCityName(from location: CLLocation) {
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
-            guard let placemark = placemarks?.first,
+            guard let self,
+                  let placemark = placemarks?.first,
                   let cityName = placemark.locality
             else { return }
-            self?.city = City(name: cityName, localNames: nil, lat: location.coordinate.latitude, lon: location.coordinate.longitude)
-            self?.loadData(lat: location.coordinate.latitude, lon: location.coordinate.longitude, name: cityName)
+            
+            city = City(name: cityName, localNames: nil, lat: location.coordinate.latitude, lon: location.coordinate.longitude)
+            loadData(lat: location.coordinate.latitude, lon: location.coordinate.longitude, name: cityName)
         }
     }
 }
@@ -93,10 +93,9 @@ extension HomeViewModel: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = manager.location else { return }
         setCityName(from: location)
-        self.location = location
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        manager.authorizationStatus // показывать заглушку с настройками если .denied
+        isAllowCurrentPosition = !(manager.authorizationStatus == .denied || manager.authorizationStatus == .restricted)
     }
 }

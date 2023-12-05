@@ -31,7 +31,7 @@ extension WeatherEndpoint: EndpointProtocol {
     }
     
     var params: [String : String] {
-        var params = ["appid": "e382f69da8950542f476171cc68678de", "lang": "ru", "units": "metric"]
+        var params = ["appid": "YOUR_API_KEY", "lang": "en", "units": "metric"]
         switch self {
         case let .getCurrentWeather(lat, lon),
              let .getForecast(lat, lon):

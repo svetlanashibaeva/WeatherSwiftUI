@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct TabBar: View {
-    var action: () -> Void
+    let action: () -> Void
     
     var body: some View {
-        ZStack {
-            
+        ZStack {            
             Arc()
                 .fill(Color.tabBarBackground)
                 .frame(height: 88)
@@ -22,9 +21,7 @@ struct TabBar: View {
                 }
             
             HStack {
-                Button {
-                    action()
-                } label: {
+                Button(action: action) {
                     Image(systemName: "ellipsis.circle")
                         .frame(width: 44, height: 44)
                 }

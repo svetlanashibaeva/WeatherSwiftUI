@@ -17,7 +17,7 @@ struct HomeView: View {
     @State var bottomSheetPosition: BottomSheetPosition = .middle
     @State var bottomSheetTranslation: CGFloat = BottomSheetPosition.middle.rawValue
     @State var hasDragged: Bool = false
-    
+
     @ObservedObject private var viewModel = HomeViewModel()
     
     var bottomSheetTranslationProrated: CGFloat {
@@ -25,12 +25,11 @@ struct HomeView: View {
     }
     
     var body: some View {
-//        if let mainWeather = viewModel.mainWeather {
-//            mainView(mainWeather: mainWeather)
-//        } else {
-//            Text("Loading")
-//        }
-        mainView()
+        if !viewModel.isAllowCurrentPosition {
+            OpenSettingsView()
+        } else {
+            mainView()
+        }
     }
     
     var attributedString: AttributedString {
@@ -94,9 +93,7 @@ struct HomeView: View {
                     .offset(y: -bottomSheetTranslationProrated * 46)
                     
                     // MARK: Bottom sheet
-                    BottomSheetView(position: $bottomSheetPosition) {
-                        //                    Text(bottomSheetPosition.rawValue.formatted())
-                    } content: {
+                    BottomSheetView(position: $bottomSheetPosition, header: {}) {
                         ForecastView(
                             bottomSheetTranslationProrated: bottomSheetTranslationProrated,
                             forecast: viewModel.forecast?.list ?? [],
@@ -112,13 +109,14 @@ struct HomeView: View {
                     }
                     
                     // MARK: Tab bar
-                    TabBar(action: {
+                    TabBar {
                         bottomSheetPosition = .top
-//                        guard let location = viewModel.location else { return }
-//                        viewModel.setCityName(from: location)
-                    })
+                    }
                     .offset(y: bottomSheetTranslationProrated * 115)
                 }
+                .alert(viewModel.responseError ?? "", isPresented: $viewModel.isError, actions: {
+                    Button("Ok") {}
+                })
             }
             .navigationBarBackButtonHidden(true)
         }
